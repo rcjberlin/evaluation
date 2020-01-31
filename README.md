@@ -1,5 +1,5 @@
 # rcjberlin - evaluation
-1. Fetch runs from API
+1. Fetch runs from API (see https://github.com/rcjberlin/rcj-server)
 2. Calculate standings
 3. Export to CSV and JSON
 

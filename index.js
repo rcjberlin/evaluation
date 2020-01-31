@@ -1,25 +1,19 @@
-const fetch = require("node-fetch");
-const config = require("./config.js");
+const fetchData = require("./fetchData.js");
+const standings = require("./standings.js");
 
-let encodeBase64 = function (text) {
-    return Buffer.from(text).toString('base64');
-};
+const RUN_IDS_ENTRY = ["Arena A", "Arena B", "3"];
+const RUN_IDS_LINE = ["Arena C", "Arena D", "3"];
 
+fetchData.fetchAllData()
+.then(([{teamsEntry, teamsLine}, {runsEntry, runsLine}]) => {
+    let standingsEntry = standings.initializeStandings(teamsEntry, RUN_IDS_ENTRY);
+    let standingsLine = standings.initializeStandings(teamsLine, RUN_IDS_LINE);
 
-const url = "https://rcj.pythonanywhere.com/api/v1/get_runs";
-
-fetch(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic ' + encodeBase64(config.username + ":" + config.password)
-    }
-})
-.then((response) => response.json())
-.then(json => {
-    console.log(json);
-})
-.catch((error) => {
-    console.log(error);
+    standingsEntry = standings.insertRunsIntoStandings(standingsEntry, runsEntry);
+    standingsLine = standings.insertRunsIntoStandings(standingsLine, runsLine);
+    
+    standingsEntry = standings.calculateTotalScoreAndCreateRanking(standingsEntry, 2);
+    standingsLine = standings.calculateTotalScoreAndCreateRanking(standingsLine, 2);
+    
+    // TODO: write/export
 });
