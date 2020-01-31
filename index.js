@@ -13,10 +13,14 @@ fetchData.fetchAllData()
     let standingsEntry = standings.initializeStandings(teamsEntry, RUN_IDS_ENTRY);
     standingsEntry = standings.insertRunsIntoStandings(standingsEntry, runsEntry);
     standingsEntry = standings.calculateTotalScoreAndCreateRanking(standingsEntry, 2);
-    fileExport.saveAsJSON(standingsEntry, FILENAME_ENTRY);
+    let tableEntry = standings.getTable(standingsEntry, RUN_IDS_ENTRY);
+    fileExport.saveAsJSON(tableEntry, FILENAME_ENTRY);
+    fileExport.saveAsCSV(tableEntry, FILENAME_ENTRY);
 
     let standingsLine = standings.initializeStandings(teamsLine, RUN_IDS_LINE);
     standingsLine = standings.insertRunsIntoStandings(standingsLine, runsLine);
     standingsLine = standings.calculateTotalScoreAndCreateRanking(standingsLine, 2);
-    fileExport.saveAsJSON(standingsLine, FILENAME_LINE);
+    let tableLine = standings.getTable(standingsLine, RUN_IDS_LINE);
+    fileExport.saveAsJSON(tableLine, FILENAME_LINE);
+    fileExport.saveAsCSV(tableLine, FILENAME_LINE);
 });
