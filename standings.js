@@ -42,6 +42,43 @@ exports.insertRunsIntoStandings = function (standings, runs) {
 };
 
 exports.calculateTotalScoreAndCreateRanking = function (standings, numberOfRunsToCount) {
-    // sort runs by score and time (https://stackoverflow.com/a/979289)
+    // sort runs for each team and calculate sum for each team
+    for (let team of standings) {
+        team.runs.sort((run1, run2) => compareByScoreAndTime(run1, run2));
+        team.score = 0;
+        team.time = 0;
+        for (let i=0; i<numberOfRunsToCount; i++) {
+            team.score += team.runs[i].score;
+            team.time += team.runs[i].time;
+        }
+    }
+
+    // sort teams
+    standings.sort((team1, team2) => compareByScoreAndTime(team1, team2))
+
+    // save rank
+    let rank = 1;
+    for (let i=0; i<standings.length; i++) {
+        if (i > 0 && compareByScoreAndTime(standings[i], standings[i-1]) !== 0) {
+            rank = i+1;
+        }
+        standings[i].rank = rank;
+    }
+
     return standings;
+};
+
+let compareByScoreAndTime = function (run1, run2) {
+    // sort from best/highest to worst: -1 if run1 is better, +1 if worse
+    if (run1.score > run2.score) {
+        return -1;
+    } else if (run1.score < run2.score) {
+        return 1;
+    } else if (run1.time < run2.time) {
+        return -1;
+    } else if (run1.time > run2.time) {
+        return 1;
+    } else {
+        return 0;
+    }
 };

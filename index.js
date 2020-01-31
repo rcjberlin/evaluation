@@ -7,12 +7,11 @@ const RUN_IDS_LINE = ["Arena C", "Arena D", "3"];
 fetchData.fetchAllData()
 .then(([{teamsEntry, teamsLine}, {runsEntry, runsLine}]) => {
     let standingsEntry = standings.initializeStandings(teamsEntry, RUN_IDS_ENTRY);
-    let standingsLine = standings.initializeStandings(teamsLine, RUN_IDS_LINE);
-
     standingsEntry = standings.insertRunsIntoStandings(standingsEntry, runsEntry);
-    standingsLine = standings.insertRunsIntoStandings(standingsLine, runsLine);
-    
     standingsEntry = standings.calculateTotalScoreAndCreateRanking(standingsEntry, 2);
+
+    let standingsLine = standings.initializeStandings(teamsLine, RUN_IDS_LINE);
+    standingsLine = standings.insertRunsIntoStandings(standingsLine, runsLine);
     standingsLine = standings.calculateTotalScoreAndCreateRanking(standingsLine, 2);
     
     // TODO: write/export
