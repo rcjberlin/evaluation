@@ -20,3 +20,9 @@ fetchData.fetchAllData()
     fileExport.saveAsJSON(tableLine, FILENAME_LINE);
     fileExport.saveAsCSV(tableLine, FILENAME_LINE);
 });
+
+// TODO: add/update instead of overwrite
+fileExport.saveAsJSON({
+    line: (new Date()).getTime(),
+    lineEntry: (new Date()).getTime()
+}, "_lastUpdate");
