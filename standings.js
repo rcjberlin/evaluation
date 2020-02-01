@@ -1,98 +1,116 @@
-exports.initializeStandings = function (listOfTeamnames, runIds) {
-    let standings = [];
-    for (let i=0; i<listOfTeamnames.length; i++) {
-        standings.push({
-            rank: null,
-            teamname: listOfTeamnames[i],
-            score: null,
-            time: null,
-            runs: []
-        });
-        for (let j=0; j<runIds.length; j++) {
-            standings[i].runs.push({
-                id: runIds[j],
+exports.Standings = class {
+    constructor (listOfTeamnames, runIds, runs, numberOfRunsToCount) {
+        this.standings = [];
+        this.listOfTeamnames = listOfTeamnames;
+        this.runIds = runIds;
+        this.runs = runs;
+        this.numberOfRunsToCount = numberOfRunsToCount;
+
+        this.initializeStandings();
+        this.insertRunsIntoStandings();
+        this.calculateTotalScoreAndCreateRanking();
+    }
+
+    initializeStandings () {
+        this.standings = [];
+        for (let i=0; i<this.listOfTeamnames.length; i++) {
+            this.standings.push({
+                rank: null,
+                teamname: this.listOfTeamnames[i],
                 score: null,
-                time: null
+                time: null,
+                runs: []
             });
-        }
-    }
-    return standings;
-};
-
-exports.insertRunsIntoStandings = function (standings, runs) {
-    for (let run of runs) {
-        let team = standings.find((team) => team.teamname === run.teamname);
-        if (team) {
-            // correct team in standings found, now find correct run in standings (by id)
-            // try to find by round first, otherwise by arena
-            let runStanding = team.runs.find((runStanding) => runStanding.id == run.round) ||
-                                team.runs.find((runStanding) => runStanding.id == run.arena);
-            if (runStanding) {
-                runStanding.score = run.score;
-                runStanding.time = run.time_duration;
-                console.log("inserted");
-            } else {
-                console.log("couldn't match to run in standings: ", run);
+            for (let j=0; j<this.runIds.length; j++) {
+                this.standings[i].runs.push({
+                    id: this.runIds[j],
+                    score: null,
+                    time: null
+                });
             }
-        } else {
-            console.log("teamname not found in standings: ", run);
-        }
-    }
-    return standings;
-};
-
-exports.calculateTotalScoreAndCreateRanking = function (standings, numberOfRunsToCount) {
-    // sort runs for each team and calculate sum for each team
-    for (let team of standings) {
-        team.runs.sort((run1, run2) => compareByScoreAndTime(run1, run2));
-        team.score = 0;
-        team.time = 0;
-        for (let i=0; i<numberOfRunsToCount; i++) {
-            team.score += team.runs[i].score;
-            team.time += team.runs[i].time;
         }
     }
 
-    // sort teams
-    standings.sort((team1, team2) => compareByScoreAndTime(team1, team2))
-
-    // save rank
-    let rank = 1;
-    for (let i=0; i<standings.length; i++) {
-        if (i > 0 && compareByScoreAndTime(standings[i], standings[i-1]) !== 0) {
-            rank = i+1;
-        }
-        standings[i].rank = rank;
-    }
-
-    return standings;
-};
-
-exports.getTable = function (standings, runIds) {
-    let table = [];
-
-    table.push(["#","Team","Punktzahl","Zeit"]);
-    for (let runId of runIds) {
-        table[0].push("Punkte ("+String(runId).slice(-1)+")");
-        table[0].push("Zeit ("+String(runId).slice(-1)+")");
-    }
-
-    for (let team of standings) {
-        table.push([
-            team.rank,
-            team.teamname,
-            castScoreForTable(team.score),
-            castTimeForTable(team.time)
-        ]);
-        for (let runId of runIds) {
-            let run = team.runs.find((run) => run.id === runId);
-            table[table.length-1].push(castScoreForTable(run.score));
-            table[table.length-1].push(castTimeForTable(run.time));
+    insertRunsIntoStandings () {
+        for (let run of this.runs) {
+            let team = this.standings.find((team) => team.teamname === run.teamname);
+            if (team) {
+                // correct team in standings found, now find correct run in standings (by id)
+                // try to find by round first, otherwise by arena
+                let runStanding = team.runs.find((runStanding) => runStanding.id == run.round) ||
+                                    team.runs.find((runStanding) => runStanding.id == run.arena);
+                if (runStanding) {
+                    runStanding.score = run.score;
+                    runStanding.time = run.time_duration;
+                    console.log("inserted");
+                } else {
+                    console.log("couldn't match to run in standings: ", run);
+                }
+            } else {
+                console.log("teamname not found in standings: ", run);
+            }
         }
     }
 
-    return table;
-};
+    calculateTotalScoreAndCreateRanking () {
+        this.calculateScoreForEachTeam();
+        this.sortTeamsByScore();
+        this.setRankForEachTeam();
+    }
+
+    calculateScoreForEachTeam () {
+        for (let team of this.standings) {
+            team.runs.sort((run1, run2) => compareByScoreAndTime(run1, run2));
+            team.score = 0;
+            team.time = 0;
+            for (let i=0; i<this.numberOfRunsToCount; i++) {
+                team.score += team.runs[i].score;
+                team.time += team.runs[i].time;
+            }
+        }
+    }
+
+    sortTeamsByScore () {
+        this.standings.sort((team1, team2) => compareByScoreAndTime(team1, team2));
+    }
+
+    setRankForEachTeam () {
+        let rank = 1;
+        for (let i=0; i<this.standings.length; i++) {
+            if (i > 0 && compareByScoreAndTime(this.standings[i], this.standings[i-1]) !== 0) {
+                rank = i+1;
+            }
+            this.standings[i].rank = rank;
+        }
+    }
+
+
+    getStandingsAsTable () {
+        let table = [];
+
+        table.push(["#","Team","Punktzahl","Zeit"]);
+        for (let runId of this.runIds) {
+            table[0].push("Punkte ("+String(runId).slice(-1)+")");
+            table[0].push("Zeit ("+String(runId).slice(-1)+")");
+        }
+
+        for (let team of this.standings) {
+            table.push([
+                team.rank,
+                team.teamname,
+                castScoreForTable(team.score),
+                castTimeForTable(team.time)
+            ]);
+            for (let runId of this.runIds) {
+                let run = team.runs.find((run) => run.id === runId);
+                table[table.length-1].push(castScoreForTable(run.score));
+                table[table.length-1].push(castTimeForTable(run.time));
+            }
+        }
+
+        return table;
+    }
+}
 
 let castScoreForTable = function (score) {
     return score === null || score === undefined ? "-" : score;
