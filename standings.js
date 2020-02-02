@@ -98,33 +98,19 @@ exports.Standings = class {
             table.push([
                 team.rank,
                 team.teamname,
-                castScoreForTable(team.score),
-                castTimeForTable(team.time)
+                team.score,
+                team.time
             ]);
             for (let runId of this.runIds) {
                 let run = team.runs.find((run) => run.id === runId);
-                table[table.length-1].push(castScoreForTable(run.score));
-                table[table.length-1].push(castTimeForTable(run.time));
+                table[table.length-1].push(run.score);
+                table[table.length-1].push(run.time);
             }
         }
 
         return table;
     }
 }
-
-let castScoreForTable = function (score) {
-    return score === null || score === undefined ? "-" : score;
-};
-
-let castTimeForTable = function (time) {
-    if (time === null || time === undefined) {
-        return "-";
-    }
-    let minutes = Math.floor(time/60);
-    let seconds = Math.floor(time%60);
-    seconds = (seconds < 10 ? "0" : "") + seconds;
-    return minutes + ":" + seconds;
-};
 
 let compareByScoreAndTime = function (run1, run2) {
     // sort from best/highest to worst: -1 if run1 is better, +1 if worse
