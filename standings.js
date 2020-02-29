@@ -42,7 +42,6 @@ exports.Standings = class {
                 if (runStanding) {
                     runStanding.score = run.score;
                     runStanding.time = run.time_duration;
-                    console.log("inserted");
                 } else {
                     console.log("couldn't match to run in standings: ", run);
                 }
