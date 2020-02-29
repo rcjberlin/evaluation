@@ -1,0 +1,9 @@
+[
+    ["#","Team","Punktzahl","Zeit","Punkte (1)","Zeit (1)","Punkte (2)","Zeit (2)","Punkte (3)","Zeit (3)"],
+    [1,"i-bots 14",325,null,195,null,130,null,null,null],
+    [2,"killer robots",295,null,150,null,145,null,null,null],
+    [3,"i-Bots 9",225,null,100,null,125,null,null,null],
+    [4,"Dädalus",195,null,95,null,100,null,null,null],
+    [5,"Harrys Butterbrot",145,null,65,null,80,null,null,null],
+    [6,"maze runner",120,null,70,null,80,null,null,null]
+]
