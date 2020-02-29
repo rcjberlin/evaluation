@@ -24,5 +24,7 @@ fetchData.fetchAllData()
 // TODO: add/update instead of overwrite
 fileExport.saveAsJSON({
     line: (new Date()).getTime(),
-    lineEntry: (new Date()).getTime()
+    lineEntry: (new Date()).getTime(),
+    maze: 1583017647008,
+    mazeEntry: 1583017647008
 }, "_lastUpdate");
