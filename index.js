@@ -25,6 +25,6 @@ fetchData.fetchAllData()
 fileExport.saveAsJSON({
     line: (new Date()).getTime(),
     lineEntry: (new Date()).getTime(),
-    maze: 1583068739191
+    maze: 1583068739191,
     mazeEntry: 1583068739191
 }, "_lastUpdate");
