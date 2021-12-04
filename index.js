@@ -2,11 +2,12 @@ const fetchData = require("./fetchData.js");
 const { Standings } = require("./standings.js");
 const fileExport = require("./fileExport.js");
 
-const RUN_IDS_ENTRY = ["Arena A", "Arena B", "3"];
-const RUN_IDS_LINE = ["Arena C", "Arena D", "3"];
+const RUN_IDS_ENTRY = ["A", "B", "3"];
+const RUN_IDS_LINE = ["C", "D", "3"];
 
 const FILENAME_ENTRY = "standingsEntry";
 const FILENAME_LINE = "standingsLine";
+const FILENAME_LAST_UPDATE = "_lastUpdate";
 
 fetchData.fetchAllData()
 .then(([{teamsEntry, teamsLine}, {runsEntry, runsLine}]) => {
@@ -21,10 +22,8 @@ fetchData.fetchAllData()
     fileExport.saveAsCSV(tableLine, FILENAME_LINE);
 });
 
-// TODO: add/update instead of overwrite
 fileExport.saveAsJSON({
+    ...fileExport.readJSON(FILENAME_LAST_UPDATE),
     line: (new Date()).getTime(),
     lineEntry: (new Date()).getTime(),
-    maze: 1583068739191,
-    mazeEntry: 1583068739191
-}, "_lastUpdate");
+}, FILENAME_LAST_UPDATE);

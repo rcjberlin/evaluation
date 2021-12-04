@@ -29,3 +29,12 @@ let saveFile = function (filename, content) {
         console.log("Wrote successfully to " + filename);
     });
 };
+
+exports.readJSON = function (name) {
+    const fileContent = fs.readFileSync(PATH + name + ".json", "utf-8");
+    try {
+        return JSON.parse(fileContent);
+    } catch {
+        return {};
+    }
+};

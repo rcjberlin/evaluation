@@ -2,11 +2,11 @@ const fetch = require("node-fetch");
 const config = require("./config.js");
 
 
-const URL_TEAMS = "https://rcjberlin.github.io/rcj-dss/competitions.json";
-const URL_RUNS = "https://rcj.pythonanywhere.com/api/v1/get_runs";
+const URL_TEAMS = `${config.rcj_server_hostname}/schedule/json/teams.json`;
+const URL_RUNS = `${config.rcj_server_hostname}/api/v1/get_runs`;
 
-const COMPETITION_ID_ENTRY = "2020-berlin-entry";
-const COMPETITION_ID_LINE = "2020-berlin-line";
+const COMPETITION_ID_ENTRY = `${config.competition}-line-entry`;
+const COMPETITION_ID_LINE = `${config.competition}-line`;
 
 exports.fetchAllData = function () {
     return Promise.all([
@@ -24,9 +24,17 @@ let fetchTeams = function () {
     })
     .then((response) => response.json())
     .then((json) => {
+        const teamsEntry = [], teamsLine = [];
+        for (const teamObj of json) {
+            if (teamObj.competition === "line-entry") {
+                teamsEntry.push(teamObj.name);
+            } else if (teamObj.competition === "line") {
+                teamsLine.push(teamObj.name);
+            }
+        }
         return {
-            teamsEntry: json.entry.teams,
-            teamsLine: json.line.teams
+            teamsEntry,
+            teamsLine
         };
     });
 };
