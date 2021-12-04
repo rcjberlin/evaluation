@@ -1,22 +1,11 @@
 {
   "name": "rcjberlin-evaluation",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "calc": "node calc.js",
+    "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rcjberlin/evaluation.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rcjberlin/evaluation/issues"
-  },
-  "homepage": "https://github.com/rcjberlin/evaluation#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "node-fetch": "^2.6.0"
   }
 }
